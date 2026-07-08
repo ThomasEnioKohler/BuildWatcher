@@ -1,0 +1,25 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "BuildWatcher main window capabilities",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:tray:default",
+    "core:image:default",
+    "core:menu:default",
+    "core:window:allow-hide",
+    "core:window:allow-show",
+    "core:window:allow-set-focus",
+    "core:window:allow-unminimize",
+    "notification:default",
+    "store:default",
+    "opener:default",
+    "updater:default",
+    "process:default",
+    {
+      "identifier": "http:default",
+      "allow": [{ "url": "https://**" }]
+    }
+  ]
+}
