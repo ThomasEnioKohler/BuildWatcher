@@ -69,6 +69,16 @@ if (choice === "4") {
   if (rb.status !== 0) process.exit(rb.status ?? 1);
   nextVersion = selected.next;
   console.log(`\n✔ Version ist jetzt v${nextVersion}`);
+
+  // Commit + Tag sofort pushen, damit gh release den existierenden Tag verwendet
+  if (isGit) {
+    const rp = spawnSync("git", ["push", "--follow-tags"], {
+      cwd: root,
+      stdio: "inherit",
+    });
+    if (rp.status === 0) console.log("✔ Commit + Tag gepusht");
+    else console.warn("⚠ Push fehlgeschlagen – bitte manuell: git push --follow-tags");
+  }
 }
 let r;
 
