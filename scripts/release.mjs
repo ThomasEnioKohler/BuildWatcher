@@ -13,8 +13,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { arch } from "node:os";
 
-// TODO: Öffentliches GitHub-Repo für Releases eintragen ("owner/repo"):
-const GITHUB_REPO = "OWNER/REPO";
+const GITHUB_REPO = "ThomasEnioKohler/BuildWatcher";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));

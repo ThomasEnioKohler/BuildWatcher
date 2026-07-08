@@ -28,7 +28,7 @@
     "updater": {
       "pubkey": "PLACEHOLDER_PUBKEY_HIER_EINFUEGEN",
       "endpoints": [
-        "https://github.com/OWNER/REPO/releases/latest/download/latest.json"
+        "https://github.com/ThomasEnioKohler/BuildWatcher/releases/latest/download/latest.json"
       ]
     }
   },
