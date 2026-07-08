@@ -31,6 +31,7 @@ console.log(`\nBuildWatcher Release – aktuelle Version: v${pkg.version}\n`);
 options.forEach((o, i) =>
   console.log(`  ${i + 1}) ${o.type.padEnd(6)} → v${o.next}  (${o.hint})`)
 );
+console.log(`  4) kein Bump – aktuelle v${pkg.version} nur bauen/veröffentlichen`);
 console.log("  0) Abbrechen\n");
 
 const choice = (await rl.question("Welcher Bump? [1] ")).trim() || "1";
@@ -38,30 +39,38 @@ if (choice === "0") {
   console.log("Abgebrochen.");
   process.exit(0);
 }
-const selected = options[Number(choice) - 1];
-if (!selected) {
-  console.error("Ungültige Auswahl.");
-  process.exit(1);
-}
 
+let nextVersion;
 const isGit = existsSync(join(root, ".git"));
-const confirm = (
-  await rl.question(
-    `v${pkg.version} → v${selected.next}${isGit ? " (mit Git-Commit + Tag)" : ""} – ok? [J/n] `
-  )
-)
-  .trim()
-  .toLowerCase();
-if (confirm === "n" || confirm === "nein") {
-  console.log("Abgebrochen.");
-  process.exit(0);
-}
 
-const bumpArgs = ["version", selected.type];
-if (!isGit) bumpArgs.push("--no-git-tag-version");
-let r = spawnSync("npm", bumpArgs, { cwd: root, stdio: "inherit" });
-if (r.status !== 0) process.exit(r.status ?? 1);
-console.log(`\n✔ Version ist jetzt v${selected.next}`);
+if (choice === "4") {
+  nextVersion = pkg.version;
+  console.log(`\n✔ Kein Bump – verwende v${nextVersion}`);
+} else {
+  const selected = options[Number(choice) - 1];
+  if (!selected) {
+    console.error("Ungültige Auswahl.");
+    process.exit(1);
+  }
+  const confirm = (
+    await rl.question(
+      `v${pkg.version} → v${selected.next}${isGit ? " (mit Git-Commit + Tag)" : ""} – ok? [J/n] `
+    )
+  )
+    .trim()
+    .toLowerCase();
+  if (confirm === "n" || confirm === "nein") {
+    console.log("Abgebrochen.");
+    process.exit(0);
+  }
+  const bumpArgs = ["version", selected.type];
+  if (!isGit) bumpArgs.push("--no-git-tag-version");
+  const rb = spawnSync("npm", bumpArgs, { cwd: root, stdio: "inherit" });
+  if (rb.status !== 0) process.exit(rb.status ?? 1);
+  nextVersion = selected.next;
+  console.log(`\n✔ Version ist jetzt v${nextVersion}`);
+}
+let r;
 
 const build = (await rl.question("\nRelease-Build jetzt erstellen? [J/n] "))
   .trim()
@@ -74,16 +83,23 @@ if (build === "n" || build === "nein") {
 
 if (!process.env.TAURI_SIGNING_PRIVATE_KEY) {
   console.warn(
-    "\n⚠ TAURI_SIGNING_PRIVATE_KEY ist nicht gesetzt – es werden keine signierten\n" +
-      "  Updater-Artefakte (.tar.gz + .sig) erzeugt. Auto-Update funktioniert dann nicht.\n" +
-      "  Siehe README, Abschnitt „Auto-Update einrichten\"."
+    "\n⚠ TAURI_SIGNING_PRIVATE_KEY ist nicht gesetzt – der Build wird beim Signieren\n" +
+      "  fehlschlagen bzw. Auto-Update funktioniert nicht. Vorher ausführen:\n" +
+      '    export TAURI_SIGNING_PRIVATE_KEY=~/.tauri/buildwatcher.key\n' +
+      '    export TAURI_SIGNING_PRIVATE_KEY_PASSWORD=""\n'
   );
+  const cont = (await rl.question("Trotzdem fortfahren? [j/N] ")).trim().toLowerCase();
+  if (cont !== "j" && cont !== "ja") {
+    rl.close();
+    console.log("Abgebrochen – Umgebungsvariablen setzen und erneut: npm run release (Option 4).");
+    process.exit(0);
+  }
 }
 
 r = spawnSync("npm", ["run", "tauri", "build"], { cwd: root, stdio: "inherit" });
 if (r.status !== 0) process.exit(r.status ?? 1);
 console.log(
-  `\n✔ Release v${selected.next} gebaut → src-tauri/target/release/bundle/`
+  `\n✔ Release v${nextVersion} gebaut → src-tauri/target/release/bundle/`
 );
 
 // ---- latest.json für den Auto-Updater erzeugen ----
@@ -97,12 +113,12 @@ if (existsSync(macosDir)) {
   const sigFile = tarball && `${tarball}.sig`;
   if (tarball && existsSync(join(macosDir, sigFile))) {
     const latest = {
-      version: selected.next,
+      version: nextVersion,
       pub_date: new Date().toISOString(),
       platforms: {
         [platform]: {
           signature: readFileSync(join(macosDir, sigFile), "utf8").trim(),
-          url: `https://github.com/${GITHUB_REPO}/releases/download/v${selected.next}/${encodeURIComponent(tarball)}`,
+          url: `https://github.com/${GITHUB_REPO}/releases/download/v${nextVersion}/${encodeURIComponent(tarball)}`,
         },
       },
     };
@@ -120,7 +136,7 @@ if (uploadFiles.length && GITHUB_REPO !== "OWNER/REPO") {
   const hasGh = spawnSync("gh", ["--version"], { stdio: "ignore" }).status === 0;
   if (hasGh) {
     const publish = (
-      await rl.question(`\nAls GitHub-Release v${selected.next} auf ${GITHUB_REPO} veröffentlichen? [J/n] `)
+      await rl.question(`\nAls GitHub-Release v${nextVersion} auf ${GITHUB_REPO} veröffentlichen? [J/n] `)
     )
       .trim()
       .toLowerCase();
@@ -130,12 +146,12 @@ if (uploadFiles.length && GITHUB_REPO !== "OWNER/REPO") {
         [
           "release",
           "create",
-          `v${selected.next}`,
+          `v${nextVersion}`,
           ...uploadFiles,
           "--repo",
           GITHUB_REPO,
           "--title",
-          `BuildWatcher v${selected.next}`,
+          `BuildWatcher v${nextVersion}`,
           "--generate-notes",
         ],
         { stdio: "inherit" }
@@ -144,7 +160,7 @@ if (uploadFiles.length && GITHUB_REPO !== "OWNER/REPO") {
     }
   } else {
     console.log(
-      `\nManuell veröffentlichen: GitHub-Release "v${selected.next}" auf ${GITHUB_REPO} anlegen\n` +
+      `\nManuell veröffentlichen: GitHub-Release "v${nextVersion}" auf ${GITHUB_REPO} anlegen\n` +
         `und diese Dateien anhängen:\n  ${uploadFiles.join("\n  ")}`
     );
   }
