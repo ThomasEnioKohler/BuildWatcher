@@ -237,7 +237,8 @@ export default function Connections({ connections, onChange }: Props) {
               Secret).
             </li>
             <li>
-              Scope <code>read_api</code> auswählen.
+              Scope <code>api</code> auswählen (wird auch zum Abbrechen von Pipelines
+              benötigt).
             </li>
             <li>
               Die angezeigte <strong>Application ID</strong> hier oben eintragen und

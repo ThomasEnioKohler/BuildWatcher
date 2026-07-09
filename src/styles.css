@@ -442,6 +442,11 @@ table.list td.actions button {
 .branch-latest:hover {
   text-decoration: underline;
 }
+.cancel-btn {
+  padding: 3px 10px;
+  font-size: 12px;
+  border-radius: 7px;
+}
 
 /* ---------- Hover-Tooltip ---------- */
 .dot-wrap {

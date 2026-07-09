@@ -1,13 +1,16 @@
+import { useState } from "react";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { repoStatus, type RepoState } from "../monitor";
 import { RESULT_LABEL } from "../notify";
-import type { BuildRun, OverallStatus } from "../types";
+import type { BuildRun, OverallStatus, RepoConfig } from "../types";
 import { overallStatus } from "../monitor";
 
 interface Props {
   states: RepoState[];
   lastPoll: Date | null;
   onRefresh: () => void;
+  /** Gibt null bei Erfolg zurück, sonst eine Fehlermeldung. */
+  onCancelRun: (repo: RepoConfig, runId: string) => Promise<string | null>;
 }
 
 const BANNER: Record<OverallStatus, string> = {
@@ -57,8 +60,20 @@ function groupByBranch(runs: BuildRun[]): [string, BuildRun[]][] {
   return [...map.entries()];
 }
 
-export default function Dashboard({ states, lastPoll, onRefresh }: Props) {
+export default function Dashboard({ states, lastPoll, onRefresh, onCancelRun }: Props) {
   const overall = overallStatus(states);
+  const [cancelling, setCancelling] = useState<string | null>(null);
+  const [cancelError, setCancelError] = useState<string | null>(null);
+
+  async function cancel(repo: RepoConfig, run: BuildRun) {
+    if (!window.confirm(`Build wirklich abbrechen?\n${repo.name} · ${run.workflow} (${run.branch})`))
+      return;
+    setCancelling(run.id);
+    setCancelError(null);
+    const err = await onCancelRun(repo, run.id);
+    if (err) setCancelError(err);
+    setCancelling(null);
+  }
 
   return (
     <div>
@@ -71,6 +86,8 @@ export default function Dashboard({ states, lastPoll, onRefresh }: Props) {
           </button>
         </span>
       </div>
+
+      {cancelError && <p className="error">Abbrechen fehlgeschlagen: {cancelError}</p>}
 
       {!states.length && (
         <p className="muted">
@@ -108,6 +125,15 @@ export default function Dashboard({ states, lastPoll, onRefresh }: Props) {
                     <a className="branch-latest" onClick={() => openUrl(latest.url)}>
                       {latest.workflow} · {RESULT_LABEL[latest.status]}
                     </a>
+                    {(latest.status === "running" || latest.status === "queued") && (
+                      <button
+                        className="danger cancel-btn"
+                        disabled={cancelling === latest.id}
+                        onClick={() => cancel(st.repo, latest)}
+                      >
+                        {cancelling === latest.id ? "Breche ab…" : "✕ Abbrechen"}
+                      </button>
+                    )}
                   </div>
                 );
               })

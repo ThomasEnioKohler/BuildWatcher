@@ -9,6 +9,16 @@ export function listRuns(conn: Connection, repoName: string): Promise<BuildRun[]
     : gitlab.listRuns(conn, repoName);
 }
 
+export function cancelRun(
+  conn: Connection,
+  repoName: string,
+  runId: string
+): Promise<void> {
+  return conn.provider === "github"
+    ? github.cancelRun(conn, repoName, runId)
+    : gitlab.cancelRun(conn, repoName, runId);
+}
+
 export function listRepos(conn: Connection): Promise<string[]> {
   return conn.provider === "github" ? github.listRepos(conn) : gitlab.listRepos(conn);
 }

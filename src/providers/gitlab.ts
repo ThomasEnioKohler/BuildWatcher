@@ -9,7 +9,7 @@ export async function startDeviceFlow(
   const r = await fetch(`${host}/oauth/authorize_device`, {
     method: "POST",
     headers: { Accept: "application/json", "Content-Type": "application/json" },
-    body: JSON.stringify({ client_id: clientId, scope: "read_api" }),
+    body: JSON.stringify({ client_id: clientId, scope: "api" }),
   });
   if (!r.ok) throw new Error(`GitLab Device Flow fehlgeschlagen (HTTP ${r.status})`);
   const d = await r.json();
@@ -50,6 +50,26 @@ export async function fetchUsername(conn: Connection): Promise<string> {
   });
   if (!r.ok) return "";
   return (await r.json()).username ?? "";
+}
+
+/** Bricht eine laufende Pipeline ab. Benötigt Scope „api" (nicht nur read_api). */
+export async function cancelRun(
+  conn: Connection,
+  repoName: string,
+  runId: string
+): Promise<void> {
+  const proj = encodeURIComponent(repoName);
+  const r = await fetch(
+    `${conn.host}/api/v4/projects/${proj}/pipelines/${runId}/cancel`,
+    { method: "POST", headers: { Authorization: `Bearer ${conn.token}` } }
+  );
+  if (!r.ok) {
+    if (r.status === 403)
+      throw new Error(
+        "Keine Berechtigung – die Verbindung braucht den Scope 'api'. Bitte neu anmelden."
+      );
+    throw new Error(`Abbrechen fehlgeschlagen (HTTP ${r.status})`);
+  }
 }
 
 /** Alle Projekte, in denen der Benutzer Mitglied ist – max. 300, nach Aktivität sortiert. */

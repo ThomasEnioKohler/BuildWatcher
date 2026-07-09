@@ -16,7 +16,7 @@ import {
   saveRepos,
   saveSettings,
 } from "./config";
-import { listRuns } from "./providers";
+import { cancelRun, listRuns } from "./providers";
 import { formatMessage, notify } from "./notify";
 import { initTray, updateTray } from "./tray";
 import { checkForUpdate, type UpdateInfo } from "./updater";
@@ -131,6 +131,18 @@ export default function App() {
     return () => clearInterval(t);
   }, [repos, connections, settings.pollSeconds, poll]);
 
+  const handleCancelRun = async (repo: RepoConfig, runId: string): Promise<string | null> => {
+    const conn = connections.find((c) => c.id === repo.connectionId);
+    if (!conn) return "Verbindung fehlt";
+    try {
+      await cancelRun(conn, repo.name, runId);
+      setTimeout(() => poll(repos, connections), 2000);
+      return null;
+    } catch (e: any) {
+      return String(e?.message ?? e);
+    }
+  };
+
   const updateConnections = async (c: Connection[]) => {
     setConnections(c);
     await saveConnections(c);
@@ -202,6 +214,7 @@ export default function App() {
             states={states}
             lastPoll={lastPoll}
             onRefresh={() => poll(repos, connections)}
+            onCancelRun={handleCancelRun}
           />
         )}
         {tab === "repos" && (

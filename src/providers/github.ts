@@ -52,6 +52,26 @@ export async function fetchUsername(conn: Connection): Promise<string> {
   return (await r.json()).login ?? "";
 }
 
+/** Bricht einen laufenden Workflow-Run ab. */
+export async function cancelRun(
+  conn: Connection,
+  repoName: string,
+  runId: string
+): Promise<void> {
+  const r = await fetch(
+    `https://api.github.com/repos/${repoName}/actions/runs/${runId}/cancel`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${conn.token}`,
+        Accept: "application/vnd.github+json",
+      },
+    }
+  );
+  if (!r.ok && r.status !== 202)
+    throw new Error(`Abbrechen fehlgeschlagen (HTTP ${r.status})`);
+}
+
 /** Alle Repos des Benutzers (eigene, Collaborator, Organisationen) – max. 300, nach Aktivität sortiert. */
 export async function listRepos(conn: Connection): Promise<string[]> {
   const names: string[] = [];
