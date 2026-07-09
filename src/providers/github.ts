@@ -1,5 +1,12 @@
 import { fetch } from "@tauri-apps/plugin-http";
-import type { BuildRun, Connection, DeviceFlowInfo, RunStatus } from "../types";
+import type {
+  BuildRun,
+  Connection,
+  DeviceFlowInfo,
+  JobInfo,
+  RunDetails,
+  RunStatus,
+} from "../types";
 
 /** Startet den OAuth Device Flow (GitHub). Die OAuth-App muss Device Flow aktiviert haben. */
 export async function startDeviceFlow(clientId: string): Promise<DeviceFlowInfo> {
@@ -50,6 +57,52 @@ export async function fetchUsername(conn: Connection): Promise<string> {
   });
   if (!r.ok) return "";
   return (await r.json()).login ?? "";
+}
+
+/** Details eines Workflow-Runs inkl. Jobs. */
+export async function getRunDetails(
+  conn: Connection,
+  repoName: string,
+  runId: string
+): Promise<RunDetails> {
+  const headers = {
+    Authorization: `Bearer ${conn.token}`,
+    Accept: "application/vnd.github+json",
+  };
+  const [runRes, jobsRes] = await Promise.all([
+    fetch(`https://api.github.com/repos/${repoName}/actions/runs/${runId}`, { headers }),
+    fetch(
+      `https://api.github.com/repos/${repoName}/actions/runs/${runId}/jobs?per_page=50`,
+      { headers }
+    ),
+  ]);
+  if (!runRes.ok) throw new Error(`GitHub API ${runRes.status}`);
+  const run = await runRes.json();
+  const jobs: JobInfo[] = jobsRes.ok
+    ? ((await jobsRes.json()).jobs ?? []).map((j: any): JobInfo => {
+        const dur =
+          j.started_at && j.completed_at
+            ? Math.round(
+                (new Date(j.completed_at).getTime() - new Date(j.started_at).getTime()) /
+                  1000
+              )
+            : undefined;
+        return {
+          name: j.name,
+          status: mapStatus(j),
+          durationSec: dur,
+          url: j.html_url,
+        };
+      })
+    : [];
+  return {
+    trigger: run.event,
+    number: `#${run.run_number}`,
+    author: run.actor?.login,
+    commitSha: run.head_sha,
+    commitMessage: run.head_commit?.message?.split("\n")[0],
+    jobs,
+  };
 }
 
 /** Bricht einen laufenden Workflow-Run ab. */

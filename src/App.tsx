@@ -16,7 +16,8 @@ import {
   saveRepos,
   saveSettings,
 } from "./config";
-import { cancelRun, listRuns } from "./providers";
+import { cancelRun, getRunDetails, listRuns } from "./providers";
+import type { RunDetails } from "./types";
 import { formatMessage, notify } from "./notify";
 import { initTray, updateTray } from "./tray";
 import { checkForUpdate, type UpdateInfo } from "./updater";
@@ -149,6 +150,12 @@ export default function App() {
     }
   };
 
+  const handleLoadDetails = async (repo: RepoConfig, runId: string): Promise<RunDetails> => {
+    const conn = connections.find((c) => c.id === repo.connectionId);
+    if (!conn) throw new Error("Verbindung fehlt");
+    return getRunDetails(conn, repo.name, runId);
+  };
+
   const updateConnections = async (c: Connection[]) => {
     setConnections(c);
     await saveConnections(c);
@@ -221,6 +228,7 @@ export default function App() {
             lastPoll={lastPoll}
             onRefresh={() => poll(repos, connections)}
             onCancelRun={handleCancelRun}
+            loadDetails={handleLoadDetails}
           />
         )}
         {tab === "repos" && (

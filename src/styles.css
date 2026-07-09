@@ -442,10 +442,81 @@ table.list td.actions button {
 .branch-latest:hover {
   text-decoration: underline;
 }
-.cancel-btn {
-  padding: 3px 10px;
-  font-size: 12px;
-  border-radius: 7px;
+/* ---------- Build-Detail-Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 11, 0.65);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  animation: tip-in 0.15s ease;
+}
+.modal {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  width: min(560px, calc(100vw - 60px));
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+.modal-head .dot {
+  margin-top: 4px;
+}
+.modal-close {
+  margin-left: auto;
+  padding: 4px 10px;
+  font-size: 13px;
+}
+.detail-grid {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 7px 14px;
+  font-size: 13.5px;
+  align-items: baseline;
+}
+.job-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.job-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.job-list li:last-child {
+  border-bottom: none;
+}
+.job-list li:hover {
+  background: rgba(91, 140, 255, 0.08);
+}
+.job-name {
+  flex: 1;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
 }
 
 /* ---------- Hover-Tooltip ---------- */

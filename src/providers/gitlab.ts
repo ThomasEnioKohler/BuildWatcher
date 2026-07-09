@@ -1,5 +1,12 @@
 import { fetch } from "@tauri-apps/plugin-http";
-import type { BuildRun, Connection, DeviceFlowInfo, RunStatus } from "../types";
+import type {
+  BuildRun,
+  Connection,
+  DeviceFlowInfo,
+  JobInfo,
+  RunDetails,
+  RunStatus,
+} from "../types";
 
 /** Startet den OAuth Device Flow (GitLab ≥ 17.2, auch self-hosted). */
 export async function startDeviceFlow(
@@ -50,6 +57,42 @@ export async function fetchUsername(conn: Connection): Promise<string> {
   });
   if (!r.ok) return "";
   return (await r.json()).username ?? "";
+}
+
+/** Details einer Pipeline inkl. Jobs. */
+export async function getRunDetails(
+  conn: Connection,
+  repoName: string,
+  runId: string
+): Promise<RunDetails> {
+  const proj = encodeURIComponent(repoName);
+  const headers = { Authorization: `Bearer ${conn.token}` };
+  const [pipeRes, jobsRes] = await Promise.all([
+    fetch(`${conn.host}/api/v4/projects/${proj}/pipelines/${runId}`, { headers }),
+    fetch(`${conn.host}/api/v4/projects/${proj}/pipelines/${runId}/jobs?per_page=50`, {
+      headers,
+    }),
+  ]);
+  if (!pipeRes.ok) throw new Error(`GitLab API ${pipeRes.status}`);
+  const p = await pipeRes.json();
+  const jobs: JobInfo[] = jobsRes.ok
+    ? (await jobsRes.json()).map(
+        (j: any): JobInfo => ({
+          name: j.name,
+          stage: j.stage,
+          status: mapStatus(j.status),
+          durationSec: j.duration ? Math.round(j.duration) : undefined,
+          url: j.web_url,
+        })
+      )
+    : [];
+  return {
+    trigger: p.source,
+    number: `#${p.iid ?? p.id}`,
+    author: p.user?.username ?? p.user?.name,
+    commitSha: p.sha,
+    jobs,
+  };
 }
 
 /** Bricht eine laufende Pipeline ab. Benötigt Scope „api" (nicht nur read_api). */

@@ -56,6 +56,26 @@ export const DEFAULT_SETTINGS: MessageSettings = {
   pollSeconds: 30,
 };
 
+export interface JobInfo {
+  name: string;
+  stage?: string;
+  status: RunStatus;
+  durationSec?: number;
+  url: string;
+}
+
+export interface RunDetails {
+  /** Auslöser, z. B. push, pull_request, schedule */
+  trigger?: string;
+  /** Run-/Pipeline-Nummer */
+  number?: string;
+  /** Wer den Build ausgelöst hat */
+  author?: string;
+  commitSha?: string;
+  commitMessage?: string;
+  jobs: JobInfo[];
+}
+
 export interface DeviceFlowInfo {
   deviceCode: string;
   userCode: string;

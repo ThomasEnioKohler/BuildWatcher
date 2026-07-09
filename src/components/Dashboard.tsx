@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { openUrl } from "@tauri-apps/plugin-opener";
 import { repoStatus, type RepoState } from "../monitor";
 import { RESULT_LABEL } from "../notify";
-import type { BuildRun, OverallStatus, RepoConfig } from "../types";
+import type { BuildRun, OverallStatus, RepoConfig, RunDetails } from "../types";
 import { overallStatus } from "../monitor";
+import BuildDetails from "./BuildDetails";
 
 interface Props {
   states: RepoState[];
@@ -11,6 +11,7 @@ interface Props {
   onRefresh: () => void;
   /** Gibt null bei Erfolg zurück, sonst eine Fehlermeldung. */
   onCancelRun: (repo: RepoConfig, runId: string) => Promise<string | null>;
+  loadDetails: (repo: RepoConfig, runId: string) => Promise<RunDetails>;
 }
 
 const BANNER: Record<OverallStatus, string> = {
@@ -32,18 +33,18 @@ function formatDuration(run: BuildRun): string | null {
 }
 
 /** Build-Punkt mit Detail-Tooltip beim Hover. */
-function RunDot({ run }: { run: BuildRun }) {
+function RunDot({ run, onOpen }: { run: BuildRun; onOpen: () => void }) {
   const duration = formatDuration(run);
   return (
     <span className="dot-wrap">
-      <span className={`dot small ${run.status}`} onClick={() => openUrl(run.url)} />
+      <span className={`dot small ${run.status}`} onClick={onOpen} />
       <span className="dot-tip">
         <strong>{run.workflow}</strong>
         <span className={`tip-status ${run.status}`}>{RESULT_LABEL[run.status]}</span>
         <span>Branch: {run.branch}</span>
         {run.startedAt && <span>Start: {new Date(run.startedAt).toLocaleString()}</span>}
         {duration && <span>Dauer: {duration}</span>}
-        <span className="muted">Klicken öffnet den Build im Browser</span>
+        <span className="muted">Klicken für Details</span>
       </span>
     </span>
   );
@@ -60,20 +61,17 @@ function groupByBranch(runs: BuildRun[]): [string, BuildRun[]][] {
   return [...map.entries()];
 }
 
-export default function Dashboard({ states, lastPoll, onRefresh, onCancelRun }: Props) {
+export default function Dashboard({
+  states,
+  lastPoll,
+  onRefresh,
+  onCancelRun,
+  loadDetails,
+}: Props) {
   const overall = overallStatus(states);
-  const [cancelling, setCancelling] = useState<string | null>(null);
-  const [cancelError, setCancelError] = useState<string | null>(null);
-
-  async function cancel(repo: RepoConfig, run: BuildRun) {
-    if (!window.confirm(`Build wirklich abbrechen?\n${repo.name} · ${run.workflow} (${run.branch})`))
-      return;
-    setCancelling(run.id);
-    setCancelError(null);
-    const err = await onCancelRun(repo, run.id);
-    if (err) setCancelError(err);
-    setCancelling(null);
-  }
+  const [selected, setSelected] = useState<{ repo: RepoConfig; run: BuildRun } | null>(
+    null
+  );
 
   return (
     <div>
@@ -86,8 +84,6 @@ export default function Dashboard({ states, lastPoll, onRefresh, onCancelRun }: 
           </button>
         </span>
       </div>
-
-      {cancelError && <p className="error">Abbrechen fehlgeschlagen: {cancelError}</p>}
 
       {!states.length && (
         <p className="muted">
@@ -119,21 +115,19 @@ export default function Dashboard({ states, lastPoll, onRefresh, onCancelRun }: 
                     <span className="branch-name mono">{branch}</span>
                     <div className="history">
                       {runs.slice(0, 15).map((r) => (
-                        <RunDot key={r.id} run={r} />
+                        <RunDot
+                          key={r.id}
+                          run={r}
+                          onOpen={() => setSelected({ repo: st.repo, run: r })}
+                        />
                       ))}
                     </div>
-                    <a className="branch-latest" onClick={() => openUrl(latest.url)}>
+                    <a
+                      className="branch-latest"
+                      onClick={() => setSelected({ repo: st.repo, run: latest })}
+                    >
                       {latest.workflow} · {RESULT_LABEL[latest.status]}
                     </a>
-                    {(latest.status === "running" || latest.status === "queued") && (
-                      <button
-                        className="danger cancel-btn"
-                        disabled={cancelling === latest.id}
-                        onClick={() => cancel(st.repo, latest)}
-                      >
-                        {cancelling === latest.id ? "Breche ab…" : "✕ Abbrechen"}
-                      </button>
-                    )}
                   </div>
                 );
               })
@@ -141,6 +135,16 @@ export default function Dashboard({ states, lastPoll, onRefresh, onCancelRun }: 
           </div>
         );
       })}
+
+      {selected && (
+        <BuildDetails
+          repo={selected.repo}
+          run={selected.run}
+          loadDetails={loadDetails}
+          onCancel={onCancelRun}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </div>
   );
 }
