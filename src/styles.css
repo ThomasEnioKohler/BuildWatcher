@@ -442,6 +442,253 @@ table.list td.actions button {
 .branch-latest:hover {
   text-decoration: underline;
 }
+/* ---------- Theme-Picker ---------- */
+.theme-picker {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+  padding: 12px 16px;
+  min-width: 150px;
+  text-align: left;
+}
+.theme-option.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(91, 140, 255, 0.18);
+}
+.theme-option span {
+  font-size: 11.5px;
+}
+
+/* =========================================================
+   Theme: Minimal Mono – reduziert, flach, monochrom
+   ========================================================= */
+[data-theme="minimal"] {
+  --bg: #0b0c0e;
+  --bg-glow: transparent;
+  --panel: #0e0f11;
+  --panel-2: #141518;
+  --border: #212327;
+  --border-soft: #191b1e;
+  --text: #e4e5e7;
+  --muted: #7a7e85;
+  --accent: #a9adb4;
+  --accent-2: #a9adb4;
+  --green: #54c968;
+  --yellow: #e0b040;
+  --red: #d95b4e;
+  --gray: #55595f;
+  --radius: 8px;
+}
+[data-theme="minimal"] body,
+body[data-theme="minimal"] {
+  background: var(--bg);
+}
+[data-theme="minimal"] nav {
+  background: var(--panel);
+}
+[data-theme="minimal"] nav button.active {
+  background: #1a1c1f;
+  color: var(--text);
+  box-shadow: none;
+}
+[data-theme="minimal"] .logo {
+  background: var(--green);
+  box-shadow: none;
+}
+[data-theme="minimal"] button.primary {
+  background: #26282c;
+  border: 1px solid #33363b;
+  color: var(--text);
+  box-shadow: none;
+}
+[data-theme="minimal"] button.primary:hover:not(:disabled) {
+  background: #2c2f34;
+  filter: none;
+}
+[data-theme="minimal"] .dot,
+[data-theme="minimal"] .dot.small {
+  border-radius: 3px;
+  box-shadow: none;
+}
+[data-theme="minimal"] .dot.running {
+  animation: pulse-flat 1.6s ease-in-out infinite;
+}
+@keyframes pulse-flat {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+[data-theme="minimal"] .repo-card {
+  background: var(--panel);
+  box-shadow: none;
+}
+[data-theme="minimal"] .repo-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+[data-theme="minimal"] .repo-card::before {
+  width: 3px;
+  background: var(--gray);
+}
+[data-theme="minimal"] .repo-card.green::before {
+  background: var(--green);
+}
+[data-theme="minimal"] .repo-card.yellow::before {
+  background: var(--yellow);
+}
+[data-theme="minimal"] .repo-card.red::before {
+  background: var(--red);
+}
+[data-theme="minimal"] .banner.green,
+[data-theme="minimal"] .banner.yellow,
+[data-theme="minimal"] .banner.red {
+  background: var(--panel);
+}
+[data-theme="minimal"] .update-banner {
+  background: var(--panel);
+  border-color: var(--border);
+}
+[data-theme="minimal"] input:focus,
+[data-theme="minimal"] select:focus {
+  border-color: #4a4e55;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+}
+[data-theme="minimal"] .device-code .code {
+  color: var(--text);
+  text-shadow: none;
+}
+[data-theme="minimal"] .theme-option.selected {
+  border-color: #4a4e55;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+}
+
+/* =========================================================
+   Theme: Kommandozentrale – datendicht, Monospace, Terminal
+   ========================================================= */
+[data-theme="command"] {
+  --bg: #0a0e0d;
+  --bg-glow: transparent;
+  --panel: #0e1412;
+  --panel-2: #121a17;
+  --border: #223029;
+  --border-soft: #182019;
+  --text: #d7e0dc;
+  --muted: #5c6663;
+  --accent: #4ade80;
+  --accent-2: #4ade80;
+  --green: #4ade80;
+  --yellow: #ffc233;
+  --red: #f87171;
+  --gray: #4a5450;
+  --radius: 6px;
+}
+[data-theme="command"] body,
+body[data-theme="command"] {
+  background: var(--bg);
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  font-size: 13px;
+}
+[data-theme="command"] nav {
+  background: var(--panel);
+}
+[data-theme="command"] nav h1 {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 12.5px;
+}
+[data-theme="command"] .logo {
+  background: var(--green);
+  border-radius: 2px;
+  box-shadow: none;
+}
+[data-theme="command"] nav button {
+  font-size: 12.5px;
+}
+[data-theme="command"] nav button.active {
+  background: #142019;
+  color: var(--green);
+  box-shadow: none;
+}
+[data-theme="command"] h2 {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 15px;
+}
+[data-theme="command"] button.primary {
+  background: #16351f;
+  border: 1px solid #295c38;
+  color: var(--green);
+  box-shadow: none;
+}
+[data-theme="command"] button.primary:hover:not(:disabled) {
+  background: #1b4226;
+  filter: none;
+}
+[data-theme="command"] .dot,
+[data-theme="command"] .dot.small {
+  border-radius: 2px;
+  box-shadow: none;
+}
+[data-theme="command"] .repo-card {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  box-shadow: none;
+}
+[data-theme="command"] .repo-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+[data-theme="command"] .repo-card::before {
+  width: 2px;
+}
+[data-theme="command"] .repo-head {
+  font-size: 13px;
+}
+[data-theme="command"] .branch-row {
+  margin-top: 7px;
+  gap: 10px;
+}
+[data-theme="command"] .banner {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12.5px;
+  padding: 10px 14px;
+}
+[data-theme="command"] .banner.green,
+[data-theme="command"] .banner.yellow,
+[data-theme="command"] .banner.red {
+  background: var(--panel);
+}
+[data-theme="command"] .update-banner {
+  background: var(--panel);
+  border-color: #295c38;
+}
+[data-theme="command"] input:focus,
+[data-theme="command"] select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.14);
+}
+[data-theme="command"] .device-code .code {
+  color: var(--green);
+  text-shadow: none;
+}
+[data-theme="command"] .theme-option.selected {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.14);
+}
+
 /* ---------- Build-Detail-Modal ---------- */
 .modal-overlay {
   position: fixed;

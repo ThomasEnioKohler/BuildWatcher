@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
 import type { MessageSettings } from "../types";
-import { DEFAULT_SETTINGS } from "../types";
+import { DEFAULT_SETTINGS, THEMES } from "../types";
 import { checkForUpdate, type UpdateInfo } from "../updater";
 
 interface Props {
@@ -51,6 +51,20 @@ export default function Settings({ settings, onChange, onUpdateFound }: Props) {
   return (
     <div>
       <h2>Einstellungen</h2>
+
+      <h3>Darstellung</h3>
+      <div className="theme-picker">
+        {THEMES.map((t) => (
+          <button
+            key={t.id}
+            className={`theme-option ${settings.theme === t.id ? "selected" : ""}`}
+            onClick={() => set("theme", t.id)}
+          >
+            <strong>{t.label}</strong>
+            <span className="muted">{t.hint}</span>
+          </button>
+        ))}
+      </div>
 
       <h3>Benachrichtigungen</h3>
       <div className="form">

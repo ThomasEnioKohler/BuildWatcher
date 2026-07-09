@@ -39,6 +39,14 @@ export interface BuildRun {
 
 export type OverallStatus = "green" | "yellow" | "red" | "gray";
 
+export type ThemeId = "minimal" | "glass" | "command";
+
+export const THEMES: { id: ThemeId; label: string; hint: string }[] = [
+  { id: "minimal", label: "Minimal Mono", hint: "reduziert, ruhig, kompakt" },
+  { id: "glass", label: "Glass", hint: "Farbverlauf, Glow, lebendig" },
+  { id: "command", label: "Kommandozentrale", hint: "datendicht, Monospace" },
+];
+
 export interface MessageSettings {
   notifyStart: boolean;
   notifyFinish: boolean;
@@ -46,6 +54,7 @@ export interface MessageSettings {
   startTemplate: string;
   finishTemplate: string;
   pollSeconds: number;
+  theme: ThemeId;
 }
 
 export const DEFAULT_SETTINGS: MessageSettings = {
@@ -54,6 +63,7 @@ export const DEFAULT_SETTINGS: MessageSettings = {
   startTemplate: "🔨 Build gestartet: {repo} ({branch}) – {workflow}",
   finishTemplate: "Build beendet: {repo} ({branch}) – {result}",
   pollSeconds: 30,
+  theme: "glass",
 };
 
 export interface JobInfo {

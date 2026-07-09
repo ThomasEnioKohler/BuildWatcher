@@ -40,6 +40,11 @@ export default function App() {
   const [update, setUpdate] = useState<UpdateInfo | null>(null);
   const [installing, setInstalling] = useState(false);
 
+  // Theme auf das Dokument anwenden
+  useEffect(() => {
+    document.documentElement.dataset.theme = settings.theme;
+  }, [settings.theme]);
+
   // Run-Status-Gedächtnis für Notification-Diffs
   const seenRuns = useRef(new Map<string, RunStatus>());
   const initializedRepos = useRef(new Set<string>());
