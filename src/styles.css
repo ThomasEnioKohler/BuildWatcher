@@ -18,6 +18,7 @@
   --red: #ff5c51;
   --gray: #78828e;
   --radius: 12px;
+  --field: #0c0f15;
 }
 body {
   margin: 0;
@@ -147,7 +148,7 @@ a:hover {
   text-decoration: underline;
 }
 code {
-  background: #0c0f15;
+  background: var(--field);
   border: 1px solid var(--border-soft);
   padding: 1px 6px;
   border-radius: 5px;
@@ -196,7 +197,7 @@ button.danger:hover:not(:disabled) {
 }
 input,
 select {
-  background: #0c0f15;
+  background: var(--field);
   border: 1px solid var(--border);
   border-radius: 9px;
   color: var(--text);
@@ -431,7 +432,7 @@ table.list td.actions button {
   font-size: 15px;
 }
 .tag {
-  background: #0c0f15;
+  background: var(--field);
   border: 1px solid var(--border-soft);
   border-radius: 6px;
   padding: 2px 8px;
@@ -764,6 +765,553 @@ body[data-theme="command"] {
   box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.14);
 }
 
+/* =========================================================
+   Theme: Neubrutalismus – dicke Ränder, harte Schatten
+   ========================================================= */
+[data-theme="brutal"] {
+  color-scheme: light;
+  --bg: #f5f0e6;
+  --bg-glow: transparent;
+  --panel: #ffffff;
+  --panel-2: #efe9db;
+  --border: #111111;
+  --border-soft: #111111;
+  --text: #111111;
+  --muted: #6b6455;
+  --accent: #1d4ed8;
+  --accent-2: #1d4ed8;
+  --green: #22c55e;
+  --yellow: #facc15;
+  --red: #ef4444;
+  --gray: #9a938a;
+  --radius: 8px;
+  --field: #ffffff;
+}
+[data-theme="brutal"] body {
+  background: var(--bg);
+}
+[data-theme="brutal"] nav {
+  background: var(--panel-2);
+  border-right: 3px solid #111;
+}
+[data-theme="brutal"] nav button.active {
+  background: #111;
+  color: #f5f0e6;
+  box-shadow: none;
+}
+[data-theme="brutal"] .logo {
+  background: var(--green);
+  border: 2px solid #111;
+  box-shadow: none;
+}
+[data-theme="brutal"] button {
+  border: 2px solid #111;
+  box-shadow: 3px 3px 0 #111;
+  background: #fff;
+}
+[data-theme="brutal"] button:hover:not(:disabled) {
+  background: #f7f3ea;
+  border-color: #111;
+}
+[data-theme="brutal"] button:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #111;
+}
+[data-theme="brutal"] button.primary {
+  background: #111;
+  color: #f5f0e6;
+  border: 2px solid #111;
+}
+[data-theme="brutal"] button.primary:hover:not(:disabled) {
+  background: #2b2b2b;
+  filter: none;
+}
+[data-theme="brutal"] input,
+[data-theme="brutal"] select {
+  border: 2px solid #111;
+}
+[data-theme="brutal"] input:focus,
+[data-theme="brutal"] select:focus {
+  border-color: #111;
+  box-shadow: 3px 3px 0 #111;
+}
+[data-theme="brutal"] .repo-card,
+[data-theme="brutal"] table.list,
+[data-theme="brutal"] .help,
+[data-theme="brutal"] .device-code,
+[data-theme="brutal"] .modal {
+  border: 3px solid #111;
+  box-shadow: 5px 5px 0 #111;
+  background: #fff;
+}
+[data-theme="brutal"] .repo-card:hover {
+  transform: none;
+  box-shadow: 5px 5px 0 #111;
+}
+[data-theme="brutal"] .repo-card::before {
+  display: none;
+}
+[data-theme="brutal"] .banner,
+[data-theme="brutal"] .statusbar,
+[data-theme="brutal"] .update-banner {
+  border: 3px solid #111;
+  box-shadow: 4px 4px 0 #111;
+  background: #fff;
+}
+[data-theme="brutal"] .banner.green {
+  background: #a5f3b4;
+}
+[data-theme="brutal"] .banner.yellow {
+  background: #fde68a;
+}
+[data-theme="brutal"] .banner.red {
+  background: #fca5a5;
+}
+[data-theme="brutal"] .dot,
+[data-theme="brutal"] .dot.small {
+  border-radius: 2px;
+  border: 2px solid #111;
+  box-shadow: none;
+  width: 12px;
+  height: 12px;
+}
+[data-theme="brutal"] .dot-tip {
+  background: #fff;
+  border: 2px solid #111;
+  box-shadow: 4px 4px 0 #111;
+}
+[data-theme="brutal"] .device-code .code {
+  color: #111;
+  text-shadow: none;
+}
+[data-theme="brutal"] .theme-option.selected {
+  border-color: #111;
+  box-shadow: 3px 3px 0 #111;
+  background: #fde68a;
+}
+
+/* =========================================================
+   Theme: Papier und Raster – hell, Schweizer Grafik
+   ========================================================= */
+[data-theme="paper"] {
+  color-scheme: light;
+  --bg: #faf8f3;
+  --bg-glow: transparent;
+  --panel: #ffffff;
+  --panel-2: #f1ede2;
+  --border: #dcd8cd;
+  --border-soft: #e6e2d7;
+  --text: #1a1a1a;
+  --muted: #8a8578;
+  --accent: #d43d2a;
+  --accent-2: #d43d2a;
+  --green: #2f8a4d;
+  --yellow: #d99a17;
+  --red: #d43d2a;
+  --gray: #b5b0a3;
+  --radius: 6px;
+  --field: #ffffff;
+}
+[data-theme="paper"] body {
+  background: var(--bg);
+}
+[data-theme="paper"] nav {
+  background: #f4f1e8;
+  border-right: 1px solid var(--border);
+}
+[data-theme="paper"] nav button.active {
+  background: #1a1a1a;
+  color: #faf8f3;
+  box-shadow: none;
+}
+[data-theme="paper"] .logo {
+  background: var(--accent);
+  box-shadow: none;
+}
+[data-theme="paper"] h2 {
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 8px;
+}
+[data-theme="paper"] button.primary {
+  background: #1a1a1a;
+  color: #faf8f3;
+  box-shadow: none;
+}
+[data-theme="paper"] button.primary:hover:not(:disabled) {
+  background: #333;
+  filter: none;
+}
+[data-theme="paper"] .repo-card {
+  background: #fff;
+  box-shadow: none;
+}
+[data-theme="paper"] .repo-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+[data-theme="paper"] .repo-card::before {
+  width: 3px;
+  background: var(--gray);
+}
+[data-theme="paper"] .banner.green,
+[data-theme="paper"] .banner.yellow,
+[data-theme="paper"] .banner.red,
+[data-theme="paper"] .update-banner {
+  background: #fff;
+}
+[data-theme="paper"] .dot,
+[data-theme="paper"] .dot.small {
+  box-shadow: none;
+}
+[data-theme="paper"] input:focus,
+[data-theme="paper"] select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(212, 61, 42, 0.12);
+}
+[data-theme="paper"] .device-code .code {
+  color: var(--accent);
+  text-shadow: none;
+}
+[data-theme="paper"] .theme-option.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(212, 61, 42, 0.12);
+}
+
+/* =========================================================
+   Theme: Synthwave – Neon auf Nachtviolett
+   ========================================================= */
+[data-theme="synthwave"] {
+  --bg: #12071f;
+  --bg-glow: #241040;
+  --panel: #1a0b2e;
+  --panel-2: #241040;
+  --border: #3a1d63;
+  --border-soft: #2b1548;
+  --text: #e8d9ff;
+  --muted: #8f7bb8;
+  --accent: #2de2e6;
+  --accent-2: #ff2ec4;
+  --green: #2de2e6;
+  --yellow: #ffd319;
+  --red: #ff2ec4;
+  --gray: #5d4a80;
+  --radius: 10px;
+  --field: #0d0518;
+}
+[data-theme="synthwave"] body {
+  background: linear-gradient(180deg, #12071f, #1e0a35);
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+}
+[data-theme="synthwave"] nav h1 {
+  color: #2de2e6;
+  text-shadow: 0 0 10px rgba(45, 226, 230, 0.7);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-size: 12.5px;
+}
+[data-theme="synthwave"] .logo {
+  background: #2de2e6;
+  box-shadow: 0 0 12px #2de2e6;
+}
+[data-theme="synthwave"] nav button.active {
+  background: linear-gradient(135deg, #2de2e6, #ff2ec4);
+  color: #12071f;
+  font-weight: 700;
+  box-shadow: 0 0 18px rgba(255, 46, 196, 0.5);
+}
+[data-theme="synthwave"] h2 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #2de2e6;
+  text-shadow: 0 0 12px rgba(45, 226, 230, 0.6);
+}
+[data-theme="synthwave"] button.primary {
+  background: linear-gradient(135deg, #2de2e6, #ff2ec4);
+  color: #12071f;
+  font-weight: 700;
+  box-shadow: 0 0 16px rgba(255, 46, 196, 0.45);
+}
+[data-theme="synthwave"] .dot.green,
+[data-theme="synthwave"] .dot.success {
+  box-shadow: 0 0 9px #2de2e6;
+}
+[data-theme="synthwave"] .dot.red,
+[data-theme="synthwave"] .dot.failure {
+  box-shadow: 0 0 9px #ff2ec4;
+}
+[data-theme="synthwave"] .dot.yellow,
+[data-theme="synthwave"] .dot.running,
+[data-theme="synthwave"] .dot.queued {
+  box-shadow: 0 0 9px #ffd319;
+}
+[data-theme="synthwave"] .repo-card.red {
+  border-color: rgba(255, 46, 196, 0.5);
+}
+[data-theme="synthwave"] .progress-fill {
+  background: linear-gradient(90deg, #2de2e6, #ff2ec4);
+  box-shadow: 0 0 8px rgba(255, 46, 196, 0.7);
+}
+[data-theme="synthwave"] .device-code .code {
+  color: #2de2e6;
+  text-shadow: 0 0 18px rgba(45, 226, 230, 0.7);
+}
+
+/* =========================================================
+   Theme: Pixel – Game-Boy-Retro
+   ========================================================= */
+[data-theme="pixel"] {
+  color-scheme: light;
+  --bg: #9bbc0f;
+  --bg-glow: transparent;
+  --panel: #8bac0f;
+  --panel-2: #7c9c0a;
+  --border: #0f380f;
+  --border-soft: #306230;
+  --text: #0f380f;
+  --muted: #306230;
+  --accent: #0f380f;
+  --accent-2: #0f380f;
+  --green: #0f380f;
+  --yellow: #306230;
+  --red: #a02010;
+  --gray: #6e8a26;
+  --radius: 0px;
+  --field: #a8c62c;
+}
+[data-theme="pixel"] body {
+  background: var(--bg);
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+}
+[data-theme="pixel"] * {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+[data-theme="pixel"] nav {
+  background: var(--panel);
+  border-right: 3px solid #0f380f;
+}
+[data-theme="pixel"] nav h1,
+[data-theme="pixel"] h2 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+[data-theme="pixel"] nav button.active {
+  background: #0f380f;
+  color: #9bbc0f;
+}
+[data-theme="pixel"] .logo {
+  background: #0f380f;
+}
+[data-theme="pixel"] button {
+  border: 2px solid #0f380f;
+  background: var(--panel);
+}
+[data-theme="pixel"] button.primary {
+  background: #0f380f;
+  color: #9bbc0f;
+}
+[data-theme="pixel"] button.primary:hover:not(:disabled) {
+  background: #306230;
+  filter: none;
+}
+[data-theme="pixel"] input,
+[data-theme="pixel"] select {
+  border: 2px solid #0f380f;
+}
+[data-theme="pixel"] .repo-card,
+[data-theme="pixel"] table.list,
+[data-theme="pixel"] .banner,
+[data-theme="pixel"] .statusbar,
+[data-theme="pixel"] .update-banner,
+[data-theme="pixel"] .help,
+[data-theme="pixel"] .device-code,
+[data-theme="pixel"] .modal,
+[data-theme="pixel"] .dot-tip {
+  border: 2px solid #0f380f;
+  background: var(--panel);
+}
+[data-theme="pixel"] .repo-card:hover {
+  transform: none;
+}
+[data-theme="pixel"] .repo-card::before {
+  width: 6px;
+}
+[data-theme="pixel"] .dot,
+[data-theme="pixel"] .dot.small {
+  width: 11px;
+  height: 11px;
+}
+[data-theme="pixel"] .progress {
+  border: 2px solid #0f380f;
+  background: var(--field);
+  height: 10px;
+}
+[data-theme="pixel"] .progress-fill {
+  background: #0f380f;
+  transition: none;
+}
+[data-theme="pixel"] .banner.green,
+[data-theme="pixel"] .banner.yellow,
+[data-theme="pixel"] .banner.red {
+  background: var(--panel);
+}
+
+/* =========================================================
+   Theme: LCARS – Sci-Fi-Konsole
+   ========================================================= */
+[data-theme="lcars"] {
+  --bg: #000000;
+  --bg-glow: transparent;
+  --panel: #000000;
+  --panel-2: #14100a;
+  --border: #3a3a3a;
+  --border-soft: #262626;
+  --text: #ff9c00;
+  --muted: #cc99cc;
+  --accent: #ff9c00;
+  --accent-2: #cc99cc;
+  --green: #99ccff;
+  --yellow: #ffcc66;
+  --red: #cc6666;
+  --gray: #555555;
+  --radius: 14px;
+  --field: #14100a;
+}
+[data-theme="lcars"] body {
+  background: #000;
+  letter-spacing: 0.4px;
+}
+[data-theme="lcars"] nav {
+  background: #000;
+  border-right: 6px solid #ff9c00;
+}
+[data-theme="lcars"] nav h1 {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #ff9c00;
+}
+[data-theme="lcars"] .logo {
+  background: #ff9c00;
+  box-shadow: none;
+  border-radius: 8px 0 0 8px;
+  width: 20px;
+}
+[data-theme="lcars"] nav button {
+  background: #9999ff;
+  color: #000;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11.5px;
+  letter-spacing: 1px;
+  border-radius: 14px 0 0 14px;
+  margin-bottom: 6px;
+}
+[data-theme="lcars"] nav button:nth-of-type(2) {
+  background: #cc99cc;
+}
+[data-theme="lcars"] nav button:nth-of-type(3) {
+  background: #cc6666;
+}
+[data-theme="lcars"] nav button:nth-of-type(4) {
+  background: #ffcc99;
+}
+[data-theme="lcars"] nav button:hover {
+  color: #000;
+  filter: brightness(1.15);
+}
+[data-theme="lcars"] nav button.active {
+  background: #ff9c00;
+  color: #000;
+  box-shadow: none;
+}
+[data-theme="lcars"] h2,
+[data-theme="lcars"] h3,
+[data-theme="lcars"] .banner,
+[data-theme="lcars"] .statusbar,
+[data-theme="lcars"] .branch-name {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+[data-theme="lcars"] .banner {
+  background: #ff9c00;
+  color: #000;
+  border: none;
+  border-radius: 18px;
+}
+[data-theme="lcars"] .banner .muted {
+  color: #4a3000;
+}
+[data-theme="lcars"] .banner.red {
+  background: #cc6666;
+}
+[data-theme="lcars"] .banner.yellow {
+  background: #ffcc66;
+}
+[data-theme="lcars"] .banner button {
+  background: #000;
+  color: #ff9c00;
+  border: none;
+  border-radius: 12px;
+}
+[data-theme="lcars"] .repo-card {
+  background: #000;
+  border: 1px solid #262626;
+  box-shadow: none;
+}
+[data-theme="lcars"] .repo-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+[data-theme="lcars"] .repo-card::before {
+  width: 10px;
+  border-radius: 10px 0 0 10px;
+}
+[data-theme="lcars"] button {
+  border-radius: 999px;
+  background: #cc99cc;
+  color: #000;
+  border: none;
+  font-weight: 600;
+}
+[data-theme="lcars"] button:hover:not(:disabled) {
+  background: #ddaadd;
+}
+[data-theme="lcars"] button.primary {
+  background: #ff9c00;
+  color: #000;
+  box-shadow: none;
+}
+[data-theme="lcars"] button.primary:hover:not(:disabled) {
+  background: #ffb133;
+  filter: none;
+}
+[data-theme="lcars"] button.danger {
+  background: #cc6666;
+  color: #000;
+}
+[data-theme="lcars"] input,
+[data-theme="lcars"] select {
+  border-radius: 999px;
+  padding-left: 16px;
+}
+[data-theme="lcars"] .dot,
+[data-theme="lcars"] .dot.small {
+  box-shadow: none;
+}
+[data-theme="lcars"] .device-code .code {
+  color: #ff9c00;
+  text-shadow: none;
+  border-radius: 18px;
+}
+[data-theme="lcars"] .theme-option {
+  border-radius: 18px;
+}
+[data-theme="lcars"] .theme-option.selected {
+  border-color: #ff9c00;
+  box-shadow: none;
+}
+
 /* ---------- Build-Detail-Modal ---------- */
 .modal-overlay {
   position: fixed;
@@ -854,7 +1402,7 @@ body[data-theme="command"] {
   transform: translateX(-50%);
   flex-direction: column;
   gap: 4px;
-  background: #0c0f15;
+  background: var(--field);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 11px 13px;
@@ -989,7 +1537,7 @@ body[data-theme="command"] {
   font-size: 30px;
   letter-spacing: 6px;
   text-align: center;
-  background: #0c0f15;
+  background: var(--field);
   border: 1px solid var(--border-soft);
   border-radius: 10px;
   padding: 14px;

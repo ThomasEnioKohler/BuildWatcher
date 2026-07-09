@@ -39,12 +39,25 @@ export interface BuildRun {
 
 export type OverallStatus = "green" | "yellow" | "red" | "gray";
 
-export type ThemeId = "minimal" | "glass" | "command";
+export type ThemeId =
+  | "minimal"
+  | "glass"
+  | "command"
+  | "brutal"
+  | "paper"
+  | "synthwave"
+  | "pixel"
+  | "lcars";
 
 export const THEMES: { id: ThemeId; label: string; hint: string }[] = [
+  { id: "glass", label: "Glass", hint: "Farbverlauf, Glow, lebendig (Standard)" },
   { id: "minimal", label: "Minimal Mono", hint: "reduziert, ruhig, kompakt" },
-  { id: "glass", label: "Glass", hint: "Farbverlauf, Glow, lebendig" },
   { id: "command", label: "Kommandozentrale", hint: "datendicht, Monospace" },
+  { id: "brutal", label: "Neubrutalismus", hint: "dicke Ränder, harte Schatten" },
+  { id: "paper", label: "Papier und Raster", hint: "hell, Schweizer Grafik" },
+  { id: "synthwave", label: "Synthwave", hint: "Neon auf Nachtviolett" },
+  { id: "pixel", label: "Pixel", hint: "Game-Boy-Retro in Grün" },
+  { id: "lcars", label: "LCARS", hint: "Sci-Fi-Konsole, Orange auf Schwarz" },
 ];
 
 export interface MessageSettings {
