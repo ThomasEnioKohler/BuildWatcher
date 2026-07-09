@@ -60,12 +60,18 @@ export default function App() {
       await initTray();
       setUpdate(await checkForUpdate());
     })();
+    // Update-Check zusätzlich alle 4 Stunden (App läuft oft lange im Tray)
+    const updateTimer = setInterval(async () => {
+      const u = await checkForUpdate();
+      if (u) setUpdate(u);
+    }, 4 * 60 * 60 * 1000);
     const unlisten = getCurrentWindow().onCloseRequested(async (e) => {
       e.preventDefault();
       await getCurrentWindow().hide();
     });
     return () => {
       unlisten.then((f) => f());
+      clearInterval(updateTimer);
     };
   }, []);
 
@@ -224,7 +230,11 @@ export default function App() {
           <Connections connections={connections} onChange={updateConnections} />
         )}
         {tab === "settings" && (
-          <Settings settings={settings} onChange={updateSettings} />
+          <Settings
+            settings={settings}
+            onChange={updateSettings}
+            onUpdateFound={setUpdate}
+          />
         )}
       </main>
     </div>

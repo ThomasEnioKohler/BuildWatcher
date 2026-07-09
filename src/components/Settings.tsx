@@ -2,13 +2,31 @@ import { useEffect, useState } from "react";
 import { enable, disable, isEnabled } from "@tauri-apps/plugin-autostart";
 import type { MessageSettings } from "../types";
 import { DEFAULT_SETTINGS } from "../types";
+import { checkForUpdate, type UpdateInfo } from "../updater";
 
 interface Props {
   settings: MessageSettings;
   onChange: (s: MessageSettings) => void;
+  onUpdateFound: (u: UpdateInfo) => void;
 }
 
-export default function Settings({ settings, onChange }: Props) {
+export default function Settings({ settings, onChange, onUpdateFound }: Props) {
+  const [checking, setChecking] = useState(false);
+  const [checkResult, setCheckResult] = useState<string | null>(null);
+
+  async function checkNow() {
+    setChecking(true);
+    setCheckResult(null);
+    const u = await checkForUpdate();
+    if (u) {
+      onUpdateFound(u);
+      setCheckResult(`Update v${u.version} verfügbar – siehe Banner oben.`);
+    } else {
+      setCheckResult("Du bist auf dem neuesten Stand.");
+    }
+    setChecking(false);
+  }
+
   const set = <K extends keyof MessageSettings>(key: K, value: MessageSettings[K]) =>
     onChange({ ...settings, [key]: value });
 
@@ -107,6 +125,16 @@ export default function Settings({ settings, onChange }: Props) {
             nicht im Dev-Modus.
           </p>
         )}
+
+        <div className="row-buttons">
+          <button onClick={checkNow} disabled={checking}>
+            {checking ? "Prüfe…" : "Jetzt nach Updates suchen"}
+          </button>
+          {checkResult && <span className="muted">{checkResult}</span>}
+        </div>
+        <p className="muted">
+          Updates werden beim App-Start und danach alle 4 Stunden automatisch geprüft.
+        </p>
       </div>
     </div>
   );
