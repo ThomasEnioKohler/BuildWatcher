@@ -231,6 +231,7 @@ export default function App() {
           <Dashboard
             states={states}
             lastPoll={lastPoll}
+            pollSeconds={settings.pollSeconds}
             onRefresh={() => poll(repos, connections)}
             onCancelRun={handleCancelRun}
             loadDetails={handleLoadDetails}

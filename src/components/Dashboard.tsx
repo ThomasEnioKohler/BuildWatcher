@@ -1,17 +1,60 @@
-import { useState } from "react";
-import { repoStatus, type RepoState } from "../monitor";
+import { useEffect, useState } from "react";
+import {
+  branchCounts,
+  estimateDurationSec,
+  overallStatus,
+  repoStatus,
+  type RepoState,
+} from "../monitor";
 import { RESULT_LABEL } from "../notify";
 import type { BuildRun, OverallStatus, RepoConfig, RunDetails } from "../types";
-import { overallStatus } from "../monitor";
 import BuildDetails from "./BuildDetails";
 
 interface Props {
   states: RepoState[];
   lastPoll: Date | null;
+  pollSeconds: number;
   onRefresh: () => void;
   /** Gibt null bei Erfolg zurück, sonst eine Fehlermeldung. */
   onCancelRun: (repo: RepoConfig, runId: string) => Promise<string | null>;
   loadDetails: (repo: RepoConfig, runId: string) => Promise<RunDetails>;
+}
+
+function fmtShort(sec: number): string {
+  if (sec < 60) return `${Math.round(sec)} s`;
+  return `${Math.round(sec / 60)} min`;
+}
+
+/** Fortschrittsbalken für einen laufenden Build, geschätzt aus der Historie. */
+function RunProgress({ run, history }: { run: BuildRun; history: BuildRun[] }) {
+  const est = estimateDurationSec(history, run.workflow);
+  const elapsed = run.startedAt
+    ? (Date.now() - new Date(run.startedAt).getTime()) / 1000
+    : null;
+  if (est && elapsed !== null && elapsed >= 0) {
+    const pct = Math.min(97, Math.round((elapsed / est) * 100));
+    const remaining = Math.max(0, est - elapsed);
+    return (
+      <span className="progress-wrap">
+        <span className="progress">
+          <span className="progress-fill" style={{ width: `${pct}%` }} />
+        </span>
+        <span className="muted progress-text">
+          {pct}% · noch ~{fmtShort(remaining)}
+        </span>
+      </span>
+    );
+  }
+  return (
+    <span className="progress-wrap">
+      <span className="progress">
+        <span className="progress-fill indeterminate" />
+      </span>
+      {elapsed !== null && (
+        <span className="muted progress-text">läuft seit {fmtShort(elapsed)}</span>
+      )}
+    </span>
+  );
 }
 
 const BANNER: Record<OverallStatus, string> = {
@@ -64,14 +107,27 @@ function groupByBranch(runs: BuildRun[]): [string, BuildRun[]][] {
 export default function Dashboard({
   states,
   lastPoll,
+  pollSeconds,
   onRefresh,
   onCancelRun,
   loadDetails,
 }: Props) {
   const overall = overallStatus(states);
+  const counts = branchCounts(states);
   const [selected, setSelected] = useState<{ repo: RepoConfig; run: BuildRun } | null>(
     null
   );
+
+  // Sekündlicher Tick, damit Fortschrittsbalken laufender Builds vorrücken
+  const anyRunning = states.some((s) =>
+    s.runs.some((r) => r.status === "running" || r.status === "queued")
+  );
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    if (!anyRunning) return;
+    const t = setInterval(() => setTick((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, [anyRunning]);
 
   return (
     <div>
@@ -84,6 +140,18 @@ export default function Dashboard({
           </button>
         </span>
       </div>
+
+      {states.length > 0 && (
+        <div className="statusbar">
+          <span className="sb-ok">● {counts.ok} ok</span>
+          <span className="sb-run">● {counts.running} laufend</span>
+          <span className="sb-fail">● {counts.failed} fehlgeschlagen</span>
+          <span className="muted">
+            {states.length} {states.length === 1 ? "Repo" : "Repos"} · Poll alle{" "}
+            {pollSeconds} s
+          </span>
+        </div>
+      )}
 
       {!states.length && (
         <p className="muted">
@@ -128,6 +196,9 @@ export default function Dashboard({
                     >
                       {latest.workflow} · {RESULT_LABEL[latest.status]}
                     </a>
+                    {(latest.status === "running" || latest.status === "queued") && (
+                      <RunProgress run={latest} history={runs} />
+                    )}
                   </div>
                 );
               })
